@@ -1,0 +1,56 @@
+---
+# This playbook deploys a nginx reverse proxy, petclinic application, and elastic stack in a kubernetes cluster.
+# nginx acts as reverse proxy/load balancer for petclinic application, and Kibana dashboards.
+# Filebeat, Metricbeat and Heartbeat monitors Petclinic application events, System metrics, and application uptime respectively.
+
+- hosts: nginx
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - nginx
+
+- hosts: petclinic
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - petclinic
+    - petclinic-filebeat
+    - metricbeat
+
+- hosts: logstash
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - logstash
+
+- hosts: elasticsearch
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - elasticsearch
+
+- hosts: kibana
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - kibana
+
+- hosts: heartbeat
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - heartbeat
+
+- hosts: kubernetes-master
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - kubernetes-master
+
