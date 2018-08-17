@@ -4,15 +4,15 @@
     state: present
   with_items:
    - python-pip
+   - docker
 
-- name: Install docker
+- name: Install docker-py module
   pip: 
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     state: present
   with_items:
-   - { name: docker,    version: 2.0.0}
-   - { name: docker-py, version: 1.10.6}
+   - { name: docker-py, version: 1.10.5}
 
 - name: Start docker service, if not running
   service:
@@ -20,14 +20,22 @@
     state: started
 
 - name: Download and run petclinic container, if not running
-  docker:
+  docker_container:
     name: petclinic
     image: iamveershukla/petclinic:1.0.0
     state: started
     ports: 8085:8085
 
 - name: Download and run filebeat container, if not running
-  docker:
+  docker_container:
     name: petclinic
     image: iamveershukla/filebeat-petclinic:1.0.0
     state: started
+
+- name: Download kubectl and setup path
+  get_url: url=https://storage.googleapis.com/kubernetes-release/release/v1.11.0/bin/linux/amd64/kubectl dest=/usr/local/bin/ mode=755
+
+
+
+
+
